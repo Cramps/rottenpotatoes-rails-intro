@@ -14,17 +14,20 @@ class MoviesController < ApplicationController
 
   def index
     @all_ratings = Movie.ratings
+    
+    # Sort
     @sort_by = params[:sort_by] || session[:sort_by]
     session[:sort_by] = @sort_by
     
+    # Filter
     unless session[:ratings]
-      @ratings = @all_ratings
-      session[:ratings] = @ratings
+      session[:ratings] = @all_ratings
     end
     @ratings = params[:ratings] ? params[:ratings] : session[:ratings]
     @ratings = @ratings.keys if @ratings.is_a? Hash
     session[:ratings] = @ratings
     
+    # Query
     @movies = Movie.where(rating: @ratings).order @sort_by
   end
 
