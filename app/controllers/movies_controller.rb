@@ -27,6 +27,12 @@ class MoviesController < ApplicationController
     @ratings = @ratings.keys if @ratings.is_a? Hash
     session[:ratings] = @ratings
     
+    # Redirect for the sake of RESTfulness
+    unless params[:ratings] && (params[:sort_by] || session[:sort_by].nil?)
+      flash.keep
+      redirect_to movies_path(params: { sort_by: @sort_by, ratings: @ratings }) and return
+    end
+    
     # Query
     @movies = Movie.where(rating: @ratings).order @sort_by
   end
